@@ -1,0 +1,261 @@
+// /*
+//  * @NOTE: Prepend a `~` to css file paths that are in your node_modules
+//  *        See https://github.com/webpack-contrib/sass-loader#imports
+//  */
+// body {
+//   position: relative;
+//   color: white;
+//   height: 100vh;
+//   background: linear-gradient(
+//     200.96deg,
+//     #fedc2a -29.09%,
+//     #dd5789 51.77%,
+//     #7a2c9e 129.35%
+//   );
+//   font-family: sans-serif;
+//   overflow-y: hidden;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// }
+
+// button {
+//   background-color: white;
+//   padding: 10px 20px;
+//   border-radius: 10px;
+//   border: none;
+//   appearance: none;
+//   font-size: 1.3rem;
+//   box-shadow: 0px 8px 28px -6px rgba(24, 39, 75, 0.12),
+//     0px 18px 88px -4px rgba(24, 39, 75, 0.14);
+//   transition: transform ease-in 0.1s;
+//   cursor: pointer;
+// }
+
+// button:hover {
+//   transform: scale(1.05);
+// }
+
+// li {
+//   list-style: none;
+// }
+
+// a {
+//   text-decoration: none;
+//   height: fit-content;
+//   width: fit-content;
+//   margin: 10px;
+// }
+
+// a:hover {
+//   opacity: 1;
+//   text-decoration: none;
+// }
+
+// .Hello {
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   margin: 20px 0;
+
+// }
+
+::-webkit-scrollbar {
+  width: 8px; /* width of the entire scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: none; /* color of the tracking area */
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 20px; /* roundness of the scroll thumb */
+  background-color: hsl(0, 0%, 21%);
+}
+
+// Set your brand colors
+@import "bulma/css/bulma.css";
+// $scheme-main: $black;
+
+html,
+body {
+  background-color: hsl(0, 0%, 4%);
+  margin: 0;
+  padding: 0;
+}
+
+.authorization {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: #fff !important;
+
+  .hero {
+    width: fit-content;
+    .hero-body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      .auth-submit {
+        display: flex;
+        input {
+          margin-right: 0.2rem;
+        }
+      }
+    }
+  }
+}
+
+main {
+  height: 100vh;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  grid-template-areas:
+    "playlists header"
+    "playlists download";
+
+  margin: 0;
+  padding: 0;
+  .main-title {
+    grid-area: header;
+    text-align: center;
+    margin: 5rem;
+  }
+  .playlists,
+  .playlists-download {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 0.5rem;
+    height: inherit;
+    grid-area: playlists;
+    .playlist-title {
+      margin: 2rem;
+    }
+    ul {
+      overflow: auto;
+      min-width: 300px;
+      flex-wrap: wrap;
+
+      .videos-delete {
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+
+        img {
+          margin-right: 0.5rem;
+        }
+      }
+    }
+  }
+
+  .playlists-download {
+    grid-area: download;
+    ul {
+      margin: 5rem;
+      display: flex;
+      // height: 50%;
+      // width: 100%;
+      overflow: auto;
+      flex-wrap: wrap;
+    }
+  }
+}
+.box {
+  background-color: hsl(0, 0%, 21%);
+  color: rgb(180, 180, 180);
+  margin: 1rem;
+  max-width: 300px;
+}
+
+a {
+  color: red;
+  :hover {
+    color: hsl(0, 0%, 4%);
+  }
+}
+
+strong {
+  color: azure;
+}
+
+span,
+button {
+  display: flex;
+  justify-content: flex-start;
+  background: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+  // width: 100%;
+  span,
+  img {
+    width: 1.5rem;
+  }
+}
+
+button {
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  background-color: hsl(0, 0%, 21%) !important;
+  th,
+  td {
+    color: #fff !important;
+  }
+  th {
+    z-index: 888;
+    position: sticky;
+    top: 0;
+    background-color: hsl(0, 0%, 4%);
+  }
+
+  td {
+    opacity: 0;
+    animation: 0.4s ease-in forwards show;
+  }
+}
+
+.table-thumbnail {
+  width: 100%;
+  min-width: 100px;
+}
+
+.settings-wrapper {
+  z-index: 999;
+  display: grid;
+  place-items: center;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: 0.4s ease-in-out forwards popup;
+  .settings {
+    width: 50vw;
+  }
+}
+
+@keyframes popup {
+  from {
+    backdrop-filter: blur(0px);
+  }
+  to {
+    backdrop-filter: blur(5px);
+  }
+}
+@keyframes show {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
