@@ -84,7 +84,7 @@
 
 ::-webkit-scrollbar-thumb {
   border-radius: 20px; /* roundness of the scroll thumb */
-  background-color: hsl(0, 0%, 13%);
+  background-color: #fff;
 }
 
 // Set your brand colors
@@ -143,14 +143,28 @@ main {
     align-items: center;
     justify-items: center;
     gap: 1rem;
+    color: #fff !important;
     button {
       padding: 5px;
       outline: none;
+      border-radius: 50%;
       box-shadow: 0px 0px 10px 0px rgb(77, 3, 3);
       justify-self: flex-start;
       &:focus {
         box-shadow: 0px 0px 10px 3px rgb(77, 3, 3);
       }
+    }
+  }
+
+  .playlists {
+    background-color: hsl(0, 0%, 13%);
+    border-right: 2px solid hsl(0, 0%, 21%);
+    ::-webkit-scrollbar-track {
+      background: transparent; /* color of the tracking area */
+    }
+    ::-webkit-scrollbar-thumb {
+      border-radius: 20px; /* roundness of the scroll thumb */
+      background-color: hsl(0, 0%, 21%);
     }
   }
   .playlists,
@@ -167,9 +181,10 @@ main {
     }
 
     ul {
-      overflow: auto;
       min-width: 300px;
       flex-wrap: wrap;
+      overflow: auto;
+      justify-content: center;
 
       .videos-delete {
         display: flex;
@@ -179,6 +194,13 @@ main {
         img {
           margin-right: 0.5rem;
         }
+      }
+
+      li {
+        // min-width: fit-content;
+        // max-width: fit-content;
+        // min-width: 150px;
+        animation: 0.4s ease-in forwards show;
       }
     }
     a {
@@ -190,8 +212,9 @@ main {
 
   .playlists-download {
     grid-area: download;
+    text-align: center;
     ul {
-      margin: 5rem;
+      margin: 1rem;
       display: flex;
       // height: 50%;
       // width: 100%;
