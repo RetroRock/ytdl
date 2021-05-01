@@ -1,16 +1,14 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { YoutubeContext } from "../App";
+import { youtube } from "../config";
 
 export default function Playlist() {
   const { playlistId, playlistName }: any = useParams();
-  const { youtube } = useContext(YoutubeContext);
   const [playlistItems, setPlaylistItems] = useState<any[]>([]);
 
   async function getPlaylistItems() {
-    const playlist = await youtube.getPlaylist(playlistId);
-    console.log(playlist);
+    const playlist: any = await youtube.getPlaylist(playlistId);
     if (!playlist.items) return;
     setPlaylistItems([...playlist.items]);
   }

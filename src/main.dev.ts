@@ -11,11 +11,12 @@
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 import path from "path";
-import { app, BrowserWindow, shell, ipcMain } from "electron";
+import { app, BrowserWindow, shell, ipcMain, ipcRenderer } from "electron";
 import { autoUpdater } from "electron-updater";
 import log from "electron-log";
 import MenuBuilder from "./menu";
 import Youtube from "./youtube";
+import { dialog } from "electron";
 
 export default class AppUpdater {
   constructor() {
@@ -75,6 +76,7 @@ const createWindow = async () => {
     icon: getAssetPath("icon.png"),
     webPreferences: {
       nodeIntegration: true,
+      enableRemoteModule: true,
     },
   });
 
@@ -133,4 +135,23 @@ app.on("activate", () => {
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) createWindow();
 });
-// console.log("hello", ipcMain);
+
+ipcMain.on("get-downloads-path", () => {
+  mainWindow &&
+    mainWindow.webContents.send("get-downloads-path", {
+      path: app.getPath("downloads"),
+    });
+});
+
+ipcMain.on("select-directory", async (_, lastPath) => {
+  console.log(lastPath);
+  const path = await dialog.showOpenDialog({
+    properties: ["openDirectory"],
+    defaultPath: lastPath,
+  });
+
+  mainWindow &&
+    mainWindow.webContents.send("select-directory", {
+      path: path.filePaths[0],
+    });
+});

@@ -16,7 +16,6 @@ export default function PlaylistMinimal(props: Props) {
   const isSelected = props.addedPlaylists.find(
     (playlist) => playlist.id === props.playlist.id
   );
-
   return (
     <article className="media">
       <div className="media-left">

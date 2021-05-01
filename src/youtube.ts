@@ -1,18 +1,21 @@
 import fs from "fs";
-import readline from "readline";
 import { google } from "googleapis";
 import { Credentials, OAuth2Client } from "google-auth-library";
-// const { OAuth2 } = google.auth;
+import { TOKEN_PATH, SCOPES, TOKEN_DIR } from "./config";
+import { sleep } from "./utils";
 const OAuth2 = google.auth.OAuth2;
 
-const SCOPES = ["https://www.googleapis.com/auth/youtube.readonly"];
-const TOKEN_DIR =
-  (process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE) +
-  "/.credentials/";
-const TOKEN_PATH = TOKEN_DIR + "ytdl.json";
-console.log(TOKEN_PATH);
-
 export default class YouTube {
+  static getPlaylists(): any {
+    throw new Error("Method not implemented.");
+  }
+  static getNewToken(
+    value: string,
+    playlists: any
+  ): any[] | PromiseLike<any[]> {
+    throw new Error("Method not implemented.");
+  }
+
   credentials: any;
   oAuthClient: OAuth2Client | undefined;
   cachedPlaylistItems: any[] = [];
@@ -22,7 +25,18 @@ export default class YouTube {
     this.cachedPlaylists = [];
     this.getPlaylists.bind(this);
     this.playlist.bind(this);
+    this.playlists.bind(this);
     this.getPlaylist.bind(this);
+
+    // this.clearCache(10000);
+  }
+
+  private async clearCache(ms: number) {
+    while (true) {
+      await sleep(ms);
+      this.cachedPlaylistItems = [];
+      // this.cachedPlaylistItems.shift();
+    }
   }
 
   getCredentials(
@@ -40,6 +54,7 @@ export default class YouTube {
           return;
         }
         this.credentials = JSON.parse(content as any);
+        console.log(this.credentials);
         resolve(this.authorize(this.credentials, callback, ...options));
       });
     });
@@ -77,24 +92,12 @@ export default class YouTube {
       scope: SCOPES,
     });
     console.log("Authorize this app by visiting this url: ", authUrl);
-    // const rl = readline.createInterface({
-    //   input: process.stdin,
-    //   output: process.stdout,
-    // });
 
     return {
       error: { msg: "Authorization needed" },
       authUrl: authUrl,
       callback: (code: string) => () => {},
     };
-
-    // return new Promise((resolve) => {
-
-    //   rl.question("Enter the code from that page here: ", (code) => {
-    //     rl.close();
-
-    //   });
-    // });
   }
   getNewToken(code: string, callback: (oAuthClient: OAuth2Client) => void) {
     return new Promise((resolve) => {
@@ -128,7 +131,7 @@ export default class YouTube {
 
   playlists(auth: OAuth2Client) {
     const service = google.youtube("v3");
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       service.playlists.list(
         {
           auth: auth,
@@ -139,6 +142,7 @@ export default class YouTube {
         (err, response) => {
           if (err) {
             console.log("The API returned an error: " + err);
+            reject(err);
             return;
           }
           resolve((response as any).data.items);
@@ -153,10 +157,10 @@ export default class YouTube {
     return new Promise((resolve) => {
       service.playlistItems.list(
         {
+          playlistId: id,
           auth: auth,
           part: ["snippet", "contentDetails"],
           maxResults: 25,
-          playlistId: id,
         },
         (err, response) => {
           if (err) {
@@ -169,14 +173,23 @@ export default class YouTube {
     });
   }
 
-  async getPlaylists() {
-    if (this.cachedPlaylists.length > 0) {
+  async getPlaylists(clearChache = false) {
+    if (!clearChache && this.cachedPlaylists.length > 0) {
       console.log("Returning chached playlists ...");
       return this.cachedPlaylists;
     }
-    const playlists = (await this.getCredentials(this.playlists)) as any[];
-    this.cachedPlaylists = playlists;
-    return new Promise((resolve) => resolve(playlists));
+    try {
+      const playlists = (await this.getCredentials(this.playlists)) as any[];
+      this.cachedPlaylists = playlists;
+      return new Promise((resolve) => resolve(playlists));
+    } catch (e) {
+      console.error(e);
+      return new Promise((resolve) =>
+        resolve(
+          this.getNewTokenUrl(this.oAuthClient as OAuth2Client, this.playlists)
+        )
+      );
+    }
   }
 
   async getPlaylist(id: string) {

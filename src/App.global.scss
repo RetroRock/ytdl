@@ -124,6 +124,22 @@ main {
     text-align: center;
     margin: 5rem;
   }
+
+  .playlist-title-wrapper {
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    gap: 1rem;
+    button {
+      padding: 5px;
+      outline: none;
+      box-shadow: 0px 0px 10px 0px rgb(77, 3, 3);
+      justify-self: flex-start;
+      &:focus {
+        box-shadow: 0px 0px 10px 3px rgb(77, 3, 3);
+      }
+    }
+  }
   .playlists,
   .playlists-download {
     display: flex;
@@ -134,7 +150,7 @@ main {
     height: inherit;
     grid-area: playlists;
     .playlist-title {
-      margin: 2rem;
+      margin: 2rem 0;
     }
     ul {
       overflow: auto;
@@ -237,7 +253,7 @@ table {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  animation: 0.4s ease-in-out forwards popup;
+  animation: 100ms ease-in-out forwards popup;
   .settings {
     width: 50vw;
   }
@@ -257,5 +273,19 @@ table {
   }
   to {
     opacity: 1;
+  }
+}
+
+.spin {
+  animation: spin 1s ease forwards;
+  transform: rotate(360deg);
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }

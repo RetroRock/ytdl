@@ -1,4 +1,6 @@
-import React, { useRef } from "react";
+import { ipcRenderer } from "electron";
+import React, { useEffect, useRef, useState } from "react";
+import { AvailableSettings, settingsStorage } from "../config";
 
 interface Props {
   toggleSettings: () => void;
@@ -6,11 +8,31 @@ interface Props {
 
 export default function Settings(props: Props) {
   const settingsWrapperRef = useRef<HTMLDivElement>(null);
+  const [path, setPath] = useState("");
   const clickAway = (e: any) => {
     if (e.target === settingsWrapperRef.current) {
       props.toggleSettings();
     }
   };
+
+  useEffect(() => {
+    setPath(
+      settingsStorage.getSettings(AvailableSettings.video_path).video_path
+    );
+  }, []);
+
+  function selectDirectory() {
+    ipcRenderer.send("select-directory", path);
+    ipcRenderer.once("select-directory", async (_, data) => {
+      if (data.path) {
+        const settings = await settingsStorage.writeSettings({
+          video_path: data.path,
+        });
+        setPath(settings.video_path);
+      }
+    });
+  }
+
   return (
     <div
       ref={settingsWrapperRef}
@@ -18,36 +40,23 @@ export default function Settings(props: Props) {
       onClick={clickAway}
     >
       <div className="card settings">
-        <div className="card-image">
-          <figure className="image is-4by3">
-            <img
-              src="https://bulma.io/images/placeholders/1280x960.png"
-              alt="Placeholder image"
-            />
-          </figure>
-        </div>
         <div className="card-content">
-          <div className="media">
-            <div className="media-left">
-              <figure className="image is-48x48">
-                <img
-                  src="https://bulma.io/images/placeholders/96x96.png"
-                  alt="Placeholder image"
-                />
-              </figure>
-            </div>
-            <div className="media-content">
-              <p className="title is-4">John Smith</p>
-              <p className="subtitle is-6">@johnsmith</p>
-            </div>
-          </div>
+          <h1 className="title is-3">Settings</h1>
 
           <div className="content">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus
-            nec iaculis mauris. <a>@bulmaio</a>.<a href="#">#css</a>{" "}
-            <a href="#">#responsive</a>
-            <br />
-            <time dateTime="2016-1-1">11:09 PM - 1 Jan 2016</time>
+            <div className="field">
+              <label className="label">Speicherort:</label>
+              <div className="control">
+                <input
+                  title={path}
+                  className="input"
+                  type="text"
+                  onChange={() => null}
+                  onClick={selectDirectory}
+                  value={path}
+                />
+              </div>
+            </div>
           </div>
         </div>
       </div>
