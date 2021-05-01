@@ -28,11 +28,11 @@ export default function PlaylistMinimal(props: Props) {
         </figure>
         <div className="videos-delete">
           <span>
-            <img src={videoIcon} alt="Vs" />
+            <img src={videoIcon} alt="" />
             <span>{props.playlist.contentDetails.itemCount}</span>
           </span>
           <button onClick={props.togglePlaylist(props.playlist)}>
-            <img src={isSelected ? deleteIcon : addIcon} alt="Delete" />
+            <img src={isSelected ? deleteIcon : addIcon} alt="Löschen" />
           </button>
         </div>
       </div>

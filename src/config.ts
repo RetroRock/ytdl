@@ -5,7 +5,7 @@ import YoutubeDownloader from "./youtube-downloader";
 
 const HOME =
   process.env.HOME || process.env.HOMEPATH || process.env.USERPROFILE;
-
+console.log(HOME);
 // Settings
 const STORED_SETTINGS_DIRECTORY = HOME + "/.ytdl-settings/";
 const STORED_SETTINGS_PATH = STORED_SETTINGS_DIRECTORY + "settings.json";

@@ -18,6 +18,20 @@
 //   justify-content: center;
 //   align-items: center;
 // }
+// body {
+//   -ms-overflow-style: scrollbar;
+//   -webkit-app-region: drag;
+//   input[type="submit"],
+//   input[type="reset"],
+//   input[type="button"],
+//   input[type="text"],
+//   button,
+//   a,
+
+//   textarea {
+//     -webkit-app-region: no-drag;
+//   }
+// }
 
 // button {
 //   background-color: white;
@@ -65,18 +79,17 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: none; /* color of the tracking area */
+  background: hsl(0, 0%, 4%); /* color of the tracking area */
 }
 
 ::-webkit-scrollbar-thumb {
   border-radius: 20px; /* roundness of the scroll thumb */
-  background-color: hsl(0, 0%, 21%);
+  background-color: hsl(0, 0%, 13%);
 }
 
 // Set your brand colors
 @import "bulma/css/bulma.css";
 // $scheme-main: $black;
-
 html,
 body {
   background-color: hsl(0, 0%, 4%);
@@ -109,7 +122,7 @@ body {
 }
 
 main {
-  height: 100vh;
+  height: calc(100vh - 1px);
   overflow: hidden;
   display: grid;
   grid-template-columns: 1fr 2fr;
@@ -152,6 +165,7 @@ main {
     .playlist-title {
       margin: 2rem 0;
     }
+
     ul {
       overflow: auto;
       min-width: 300px;
@@ -165,6 +179,11 @@ main {
         img {
           margin-right: 0.5rem;
         }
+      }
+    }
+    a {
+      &:hover {
+        color: hsl(0, 0%, 4%);
       }
     }
   }
@@ -190,9 +209,7 @@ main {
 
 a {
   color: red;
-  :hover {
-    color: hsl(0, 0%, 4%);
-  }
+  outline: none;
 }
 
 strong {
@@ -215,6 +232,7 @@ button {
 }
 
 button {
+  outline: none;
   cursor: pointer;
 }
 

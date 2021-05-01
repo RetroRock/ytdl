@@ -53,7 +53,7 @@ export default function Playlist() {
         <tbody>
           {playlistItems.map((video, index) => (
             <tr key={"video-" + index}>
-              <td>{video.snippet.position}</td>
+              <td>{video.snippet.position + 1}</td>
               <td>
                 <div className="table-thumbnail">
                   <figure>

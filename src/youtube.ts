@@ -3,6 +3,7 @@ import { google } from "googleapis";
 import { Credentials, OAuth2Client } from "google-auth-library";
 import { TOKEN_PATH, SCOPES, TOKEN_DIR } from "./config";
 import { sleep } from "./utils";
+import { clientSecret } from "./client_secret";
 const OAuth2 = google.auth.OAuth2;
 
 export default class YouTube {
@@ -47,16 +48,18 @@ export default class YouTube {
       this.authorize(this.credentials, callback);
     }
     return new Promise((resolve) => {
-      fs.readFile("./src/client_secret.json", (err, content) => {
-        if (err) {
-          // eslint-disable-next-line no-console
-          console.log(`Error loading client secret file: ${err}`);
-          return;
-        }
-        this.credentials = JSON.parse(content as any);
-        console.log(this.credentials);
-        resolve(this.authorize(this.credentials, callback, ...options));
-      });
+      this.credentials = clientSecret;
+      resolve(this.authorize(this.credentials, callback, ...options));
+      // fs.readFile("./client_secret.json", (err, content) => {
+      //   if (err) {
+      //     // eslint-disable-next-line no-console
+      //     console.log(`Error loading client secret file: ${err}`);
+      //     return;
+      //   }
+      //   this.credentials = JSON.parse(content as any);
+      //   console.log(this.credentials);
+      //   resolve(this.authorize(this.credentials, callback, ...options));
+      // });
     });
   }
 
@@ -181,6 +184,7 @@ export default class YouTube {
     try {
       const playlists = (await this.getCredentials(this.playlists)) as any[];
       this.cachedPlaylists = playlists;
+      this.cachedPlaylistItems = [];
       return new Promise((resolve) => resolve(playlists));
     } catch (e) {
       console.error(e);
