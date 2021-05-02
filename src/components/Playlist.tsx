@@ -17,7 +17,7 @@ export default function Playlist() {
   }, [playlistId]);
 
   return (
-    <div>
+    <div className="playlist-view">
       <div className="hero">
         <div className="hero-body">
           <p className="title">{playlistName}</p>
