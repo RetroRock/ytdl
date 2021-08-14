@@ -173,7 +173,7 @@ export default class YouTube {
           resolve((response as any).data);
         }
       );
-    });
+    }).catch((err) => console.error(err));
   }
 
   async getPlaylists(clearChache = false) {
@@ -197,15 +197,20 @@ export default class YouTube {
   }
 
   async getPlaylist(id: string) {
-    const existingPlaylist = this.cachedPlaylistItems.find(
-      (playlist) => playlist.id === id
-    );
-    if (existingPlaylist) {
-      console.log("Returning chached playlist ...");
-      return new Promise((resolve) => resolve(existingPlaylist.playlist));
+    try {
+      const existingPlaylist = this.cachedPlaylistItems.find(
+        (playlist) => playlist.id === id
+      );
+      if (existingPlaylist) {
+        console.log("Returning chached playlist ...");
+        return new Promise((resolve) => resolve(existingPlaylist.playlist));
+      }
+
+      const playlist = await this.getCredentials(this.playlist, id);
+      this.cachedPlaylistItems.push({ id, playlist });
+      return new Promise((resolve) => resolve(playlist));
+    } catch (e) {
+      console.error(e);
     }
-    const playlist = await this.getCredentials(this.playlist, id);
-    this.cachedPlaylistItems.push({ id, playlist });
-    return new Promise((resolve) => resolve(playlist));
   }
 }

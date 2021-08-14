@@ -1,22 +1,24 @@
-import { ipcRenderer, TouchBarSlider } from "electron";
 import fs from "fs";
 import {
   AvailableSettings,
   playlistStorage,
   settingsStorage,
-  STORED_PLAYLISTS_DIR,
   youtube,
   YOUTUBE_VIDEO_URL,
 } from "./config";
-import ytdl from "ytdl-core";
 import { replaceForbiddenCharacters, sleep } from "./utils";
+import { downloadVideoCustom } from "./ffmpeg";
+import { VideoQualityOptions } from "./interfaces";
 
 export default class YoutubeDownloader {
   playlists: any[];
   isDownloading: boolean;
+  videoDownloadQuality: VideoQualityOptions;
+
   constructor() {
     this.playlists = [];
     this.isDownloading = false;
+    this.videoDownloadQuality = "360p";
     this.downloadPlaylistsForever();
   }
 
@@ -24,10 +26,14 @@ export default class YoutubeDownloader {
     this.playlists = playlists;
   }
 
+  updateVideoQuality(quality: VideoQualityOptions) {
+    this.videoDownloadQuality = quality;
+    console.log(this.videoDownloadQuality);
+  }
+
   private async downloadPlaylistsForever() {
     while (true) {
       this.playlists = playlistStorage.getPlaylists();
-      console.log(this.playlists);
       await this.downloadPlaylists();
       await sleep(10000);
     }
@@ -46,21 +52,6 @@ export default class YoutubeDownloader {
       );
     }
     return new Promise((resolve) => resolve(playlistpath));
-  }
-  private downloadVideo(videoUrl: string, videoPath: string) {
-    return new Promise((resolve) => {
-      const stream = ytdl(videoUrl);
-      stream.pipe(fs.createWriteStream(videoPath));
-      stream.on("finish", () => {
-        console.log(
-          "%c" + new Date().getMinutes() + ":" + new Date().getSeconds(),
-          "color: yellow"
-        );
-        resolve(true);
-      });
-      stream.on("error", () => resolve(true));
-      // ytdl.getBasicInfo(videoUrl).then((data) => console.log(data));
-    });
   }
 
   private async downloadPlaylists(): Promise<any> {
@@ -88,10 +79,17 @@ export default class YoutubeDownloader {
               "_"
             )}.mp4`;
             if (!fs.existsSync(videoPath)) {
-              await this.downloadVideo(
-                YOUTUBE_VIDEO_URL + video.contentDetails.videoId,
-                videoPath
-              );
+              try {
+                await downloadVideoCustom(
+                  YOUTUBE_VIDEO_URL + video.contentDetails.videoId,
+                  videoPath,
+                  this.videoDownloadQuality === "highest"
+                    ? undefined
+                    : this.videoDownloadQuality
+                );
+              } catch (e) {
+                console.error(e);
+              }
             }
           }
         }
